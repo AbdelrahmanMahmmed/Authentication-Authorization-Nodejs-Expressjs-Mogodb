@@ -129,7 +129,7 @@ graph TD
    npm install
    ```
 
-3. Create a `.env` file in the root directory and add:
+3. Create a `config.env` file in the root directory and add:
    ```env
     PORT= 5000 <`Your Port on Run App`>
     NODE_ENV= <`The situation the worker is in`>
