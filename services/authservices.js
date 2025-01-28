@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const SendEmail = require('../utils/sendEmail');
-
+const cookieParser = require('cookie-parser');
 
 // signup route
 exports.signup = asyncHandler(async (req, res, next) => {
@@ -20,7 +20,13 @@ exports.signup = asyncHandler(async (req, res, next) => {
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
         expiresIn: process.env.JWT_EXPIRES_TIME
     });
-    // 3- send the token to the client
+    // 3- save user login history
+    res.cookie('authToken', token, {
+        httpOnly: true,
+        secure: true,
+        maxAge: 7776000
+    });
+    // 4- send the token to the client
     res.status(201).json({
         data: user,
         token
@@ -39,7 +45,14 @@ exports.login = asyncHandler(async (req, res, next) => {
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
         expiresIn: process.env.JWT_EXPIRES_TIME
     });
-    // 4- send the token to the client
+    // 4- save user login history
+    res.cookie('authToken', token, {
+        httpOnly: true,
+        secure: true,
+        maxAge: 7776000
+    });
+
+    // 5- send the token to the client
     res.status(200).json({
         data: user,
         token
@@ -172,6 +185,13 @@ exports.Resetpassword = asyncHandler(async (req, res, next) => {
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
         expiresIn: process.env.JWT_EXPIRES_TIME
     });
+    // 4- save user login history
+    res.cookie('authToken', token, {
+        httpOnly: true,
+        secure: true,
+        maxAge: 7776000
+    });
+    // 5) send the token to the client
     res.status(200).json({
         message: 'Password has been reset successfully',
         token

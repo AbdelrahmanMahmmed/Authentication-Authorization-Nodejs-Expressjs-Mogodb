@@ -116,6 +116,12 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
     const token = jwt.sign({ userId: USER }, process.env.JWT_SECRET_KEY, {
         expiresIn: process.env.JWT_EXPIRES_TIME
     });
+    // save user login history
+    res.cookie('authToken', token, {
+        httpOnly: true,
+        secure: true,
+        maxAge: 7776000
+    });
     res.status(200).json({
         message: 'Password has been updated successfully',
         token
